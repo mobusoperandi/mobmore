@@ -12,14 +12,7 @@ pub fn can_construct_note(magazine: &[&str], note: &[&str]) -> bool {
         });
 
     let _note_word_count: HashMap<&str, u32> =
-        note.iter().fold(HashMap::new(), |mut acc, &word| {
-            let entry = acc.entry(word);
-
-            let count = entry.or_default();
-            *count += 1;
-
-            acc
-        });
+        note.iter().fold(HashMap::new(), applesauce);
 
     _note_word_count.into_iter().all(|(_a_word, _a_count)| {
         if _magazine_word_count.get(_a_word).copied().unwrap_or_default() >= _a_count {
@@ -29,3 +22,14 @@ pub fn can_construct_note(magazine: &[&str], note: &[&str]) -> bool {
         false
     })
 }
+
+
+fn applesauce <'a> (mut acc: HashMap<&'a str, u32>, word: &&'a str) -> HashMap<&'a str, u32> {
+    let entry = acc.entry(word);
+
+    let count = entry.or_default();
+    *count += 1;
+
+    acc
+}
+

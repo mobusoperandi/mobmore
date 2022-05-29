@@ -1,35 +1,31 @@
 use std::collections::HashMap;
 
 pub fn can_construct_note(magazine: &[&str], note: &[&str]) -> bool {
-    let _magazine_word_count: HashMap<&str, u32> =
-        magazine.iter().fold(HashMap::new(), |mut acc, &word| {
-            let entry = acc.entry(word);
+    let magazine = WordPile::from_str_slice(magazine);
+    let note = WordPile::from_str_slice(note);
+    magazine.contains(&note)
+}
 
-            let count = entry.or_default();
-            *count += 1;
+struct WordPile<'a> {
+    hash_map: HashMap<&'a str, u32>,
+}
 
-            acc
-        });
+impl<'a> WordPile<'a> {
+    fn from_str_slice(words: &'a [&str]) -> Self {
+        Self {
+            hash_map: words.iter().fold(HashMap::new(), |mut acc, word| {
+                let word_count = acc.entry(word).or_default();
 
-    let _note_word_count: HashMap<&str, u32> =
-        note.iter().fold(HashMap::new(), applesauce);
+                *word_count += 1;
 
-    _note_word_count.into_iter().all(|(_a_word, _a_count)| {
-        if _magazine_word_count.get(_a_word).copied().unwrap_or_default() >= _a_count {
-            return true;
+                acc
+            }),
         }
+    }
 
-        false
-    })
+    fn contains(&self, other: &Self) -> bool {
+        other.hash_map
+            .iter()
+            .all(|(word, count)| self.hash_map.get(word).copied().unwrap_or_default() >= *count)
+    }
 }
-
-
-fn applesauce <'a> (mut acc: HashMap<&'a str, u32>, word: &&'a str) -> HashMap<&'a str, u32> {
-    let entry = acc.entry(word);
-
-    let count = entry.or_default();
-    *count += 1;
-
-    acc
-}
-

@@ -1,24 +1,39 @@
-// This stub file contains items that aren't used yet; feel free to remove this module attribute
-// to enable stricter warnings.
-#![allow(unused)]
+use std::fmt::{Display, Formatter};
 
 /// various log levels
 #[derive(Clone, PartialEq, Debug)]
 pub enum LogLevel {
+    Debug,
     Info,
     Warning,
     Error,
 }
+
+impl Display for LogLevel {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let variant = match self {
+            LogLevel::Debug => "DEBUG",
+            LogLevel::Info => "INFO",
+            LogLevel::Warning => "WARNING",
+            LogLevel::Error => "ERROR",
+        };
+
+        write!(f, "{}", variant)
+    }
+}
 /// primary function for emitting logs
 pub fn log(level: LogLevel, message: &str) -> String {
-    unimplemented!()
+    format!("[{}]: {}", level, message)
 }
+
 pub fn info(message: &str) -> String {
-    unimplemented!()
+    log(LogLevel::Info, message)
 }
+
 pub fn warn(message: &str) -> String {
-    unimplemented!()
+    log(LogLevel::Warning, message)
 }
+
 pub fn error(message: &str) -> String {
-    unimplemented!()
+    log(LogLevel::Error, message)
 }

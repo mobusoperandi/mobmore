@@ -28,8 +28,9 @@ impl<'a> Hand<'a> {
         if category_ordering != std::cmp::Ordering::Equal {
             return category_ordering;
         }
-        self.discriminants().cmp(&other.discriminants())
+        self.discriminants().cmp(other.discriminants())
     }
+
     pub(crate) fn origin_str(self) -> &'a str {
         self.origin_str
     }
@@ -85,12 +86,12 @@ impl<'a> Hand<'a> {
             == 2
     }
 
-    fn discriminants(&self) -> Vec<Rank> {
+    fn discriminants(&self) -> Box<dyn Iterator<Item = Rank>> {
         use Category::*;
         match self.category() {
-            StraightFlush | Straight => vec![self.straight_discriminant()],
-            Flush => self.ranks_descending().into(),
-            _ => self.n_of_a_kind_discriminants(),
+            StraightFlush | Straight => Box::new([self.straight_discriminant()].into_iter()),
+            Flush => Box::new(self.ranks_descending().into_iter()),
+            _ => Box::new(self.n_of_a_kind_discriminants()),
         }
     }
 
@@ -130,19 +131,17 @@ impl<'a> Hand<'a> {
         }
     }
 
-    pub(crate) fn n_of_a_kind_discriminants(&self) -> Vec<Rank> {
+    pub(crate) fn n_of_a_kind_discriminants(&self) -> impl Iterator<Item = Rank> {
         self.rank_counts_descending()
             .into_iter()
             .map(|(rank, _count)| rank)
-            .collect()
     }
 
-    fn rank_counts_descending(&self) -> Vec<(Rank, usize)> {
+    fn rank_counts_descending(&self) -> impl Iterator<Item = (Rank, usize)> {
         self.rank_counts()
             .into_iter()
             .sorted_by_key(|&(rank, count)| (count, rank))
             .rev()
-            .collect()
     }
 }
 

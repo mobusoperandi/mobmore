@@ -1,26 +1,13 @@
-pub type Value = i32;
-pub type Result = std::result::Result<(), Error>;
+mod builtin;
+mod code_lexeme;
+mod colon_definition;
+mod forth;
+mod lexeme;
+mod line;
+mod stack;
+mod word;
+mod word_or_value;
+mod word_or_value_sequence;
+mod wordlist;
 
-pub struct Forth;
-
-#[derive(Debug, PartialEq, Eq)]
-pub enum Error {
-    DivisionByZero,
-    StackUnderflow,
-    UnknownWord,
-    InvalidWord,
-}
-
-impl Forth {
-    pub fn new() -> Forth {
-        unimplemented!()
-    }
-
-    pub fn stack(&self) -> &[Value] {
-        unimplemented!()
-    }
-
-    pub fn eval(&mut self, input: &str) -> Result {
-        unimplemented!("result of evaluating '{}'", input)
-    }
-}
+pub use crate::forth::{Error, Forth, Value};
